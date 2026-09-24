@@ -1,21 +1,23 @@
-# Dockerfile for Smart Email Labeling System
 FROM node:18-alpine
 
 WORKDIR /app
 
-# Copy package files
+# Package-Dateien kopieren
 COPY package*.json ./
 
-# Install ALL dependencies (inklusive devDependencies wie typescript, um bauen zu können)
+# Reines npm install für Alpine Linux ausführen
 RUN npm install
 
-# Copy application code
+# Quellcode kopieren
 COPY . .
 
-# Build TypeScript
+# Ausführungsrechte für node_modules Binaries explizit erzwingen
+RUN chmod -R +x node_modules/.bin
+
+# TypeScript Build ausführen
 RUN npm run build
 
-# Prune devDependencies nach dem Build, um das Image klein zu halten
+# Dev-Dependencies aufräumen
 RUN npm prune --production
 
 EXPOSE 3000

@@ -14,7 +14,3 @@ services:
       - IMAP_PASS=
       - JEV_API_KEY=
       - JEV_MODEL=typesafe/jev-1.13
-    volumes:
-      - ./backend:/app
-      - /app/node_modules
-    command: npm run dev
