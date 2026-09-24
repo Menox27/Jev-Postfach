@@ -6,8 +6,8 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production
+# Install ALL dependencies (inklusive devDependencies wie typescript, um bauen zu können)
+RUN npm install
 
 # Copy application code
 COPY . .
@@ -15,9 +15,9 @@ COPY . .
 # Build TypeScript
 RUN npm run build
 
-# Expose port
+# Prune devDependencies nach dem Build, um das Image klein zu halten
+RUN npm prune --production
+
 EXPOSE 3000
 
-# Start application
 CMD ["npm", "start"]
-
