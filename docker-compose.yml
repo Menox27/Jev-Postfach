@@ -1,11 +1,10 @@
-# Docker Compose for Smart Email Labeling System
 version: "3.8"
 
 services:
   backend:
     build:
-      context: ../backend
-      dockerfile: ../docker/Dockerfile
+      context: ./backend
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     environment:
@@ -16,7 +15,6 @@ services:
       - JEV_API_KEY=
       - JEV_MODEL=typesafe/jev-1.13
     volumes:
-      - ../backend:/app
+      - ./backend:/app
       - /app/node_modules
     command: npm run dev
-
