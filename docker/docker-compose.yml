@@ -1,0 +1,22 @@
+# Docker Compose for Smart Email Labeling System
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: ../backend
+      dockerfile: ../docker/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - IMAP_HOST=imap.mail.me.com
+      - IMAP_PORT=993
+      - IMAP_USER=
+      - IMAP_PASS=
+      - JEV_API_KEY=
+      - JEV_MODEL=typesafe/jev-1.13
+    volumes:
+      - ../backend:/app
+      - /app/node_modules
+    command: npm run dev
+
