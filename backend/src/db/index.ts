@@ -31,11 +31,13 @@ export class Database {
     await this.db.exec(`
       CREATE TABLE IF NOT EXISTS classifications (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
         email_uid INTEGER,
         label TEXT,
         confidence REAL,
         reasoning TEXT,
-        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id)
       );
       
       CREATE TABLE IF NOT EXISTS rules (
@@ -43,6 +45,17 @@ export class Database {
         label TEXT UNIQUE,
         folder TEXT,
         prompt TEXT
+      );
+      
+      CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        email TEXT UNIQUE NOT NULL,
+        imap_host TEXT NOT NULL,
+        imap_port INTEGER NOT NULL,
+        imap_user TEXT NOT NULL,
+        imap_pass TEXT NOT NULL,
+        jev_api_key TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       );
       
       INSERT OR IGNORE INTO rules (label, folder, prompt) VALUES 
@@ -53,10 +66,10 @@ export class Database {
     `);
   }
 
-  async saveClassification(emailUid: number, result: ClassificationResult): Promise<void> {
+  async saveClassification(userId: number, emailUid: number, result: ClassificationResult): Promise<void> {
     await this.db.run(
-      "INSERT INTO classifications (email_uid, label, confidence, reasoning) VALUES (?, ?, ?, ?)",
-      [emailUid, result.label, result.confidence, result.reasoning]
+      "INSERT INTO classifications (user_id, email_uid, label, confidence, reasoning) VALUES (?, ?, ?, ?, ?)",
+      [userId, emailUid, result.label, result.confidence, result.reasoning]
     );
   }
 

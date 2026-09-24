@@ -24,7 +24,7 @@ export class ClassificationEngine {
     this.db = database;
   }
 
-  async processEmails(): Promise<void> {
+  async processEmails(userId: number): Promise<void> {
     // Fetch unread emails
     const emails = await this.imapClient.fetchUnreadEmails();
     
@@ -43,8 +43,8 @@ export class ClassificationEngine {
         // Classify email using Jev
         const classification = await this.jevClient.classifyEmail(emailData);
         
-        // Save classification result
-        await this.db.saveClassification(email.uid, classification);
+        // Save classification result with user ID
+        await this.db.saveClassification(userId, email.uid, classification);
         
         // Find matching rule for the label
         const rule = rules.find(r => r.label === classification.label);
