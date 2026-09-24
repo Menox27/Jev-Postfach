@@ -73,7 +73,7 @@ export class JevClient {
       );
 
       return response.data.choices[0].message.content;
-    } catch (error) {
+    } catch (error: any) {
       throw new Error(`Jev API request failed: ${error.message}`);
     }
   }

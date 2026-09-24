@@ -1,6 +1,7 @@
 // Classification Engine for email processing
 import { ImapClient } from "./imapClient";
 import { JevClient } from "./jevClient";
+import { Database } from "./db";
 
 interface ClassificationRule {
   label: string;
@@ -8,17 +9,12 @@ interface ClassificationRule {
   prompt: string;
 }
 
-interface DatabaseInterface {
-  saveClassification(emailUid: number, result: any): Promise<void>;
-  getRules(): Promise<ClassificationRule[]>;
-}
-
 export class ClassificationEngine {
   private imapClient: ImapClient;
   private jevClient: JevClient;
-  private db: DatabaseInterface;
+  private db: Database;
 
-  constructor(imap: ImapClient, jev: JevClient, database: DatabaseInterface) {
+  constructor(imap: ImapClient, jev: JevClient, database: Database) {
     this.imapClient = imap;
     this.jevClient = jev;
     this.db = database;
@@ -55,7 +51,7 @@ export class ClassificationEngine {
         }
         
         console.log(`Processed email ${email.uid}: ${classification.label}`);
-      } catch (error) {
+      } catch (error: any) {
         console.error(`Failed to process email ${email.uid}:`, error.message);
       }
     }

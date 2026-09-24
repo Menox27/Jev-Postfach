@@ -40,7 +40,7 @@ export class ImapClient {
     try {
       for await (const message of this.client.fetch(
         { seen: false },
-        { source: { start: 0, end: 10000 } }
+        { source: { start: 0, maxLength: 10000 } }
       )) {
         emails.push({
           uid: message.uid,

@@ -16,7 +16,7 @@ export interface ClassificationRule {
 }
 
 export class Database {
-  private db: any;
+  public db: any;
 
   constructor(dbPath: string = "./emails.db") {
     this.init(dbPath);

@@ -34,14 +34,14 @@ async function main() {
     await imapClient.connect();
     console.log("Connected to iCloud IMAP");
     
-    // Process emails
-    await engine.processEmails();
+    // Process emails (userId 1 as default for single user mode)
+    await engine.processEmails(1);
     console.log("Email processing completed");
     
     // Disconnect
     await imapClient.disconnect();
     console.log("Disconnected from iCloud IMAP");
-  } catch (error) {
+  } catch (error: any) {
     console.error("Application error:", error);
   }
 }
