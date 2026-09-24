@@ -15,19 +15,14 @@ services:
       - JEV_API_KEY=
       - JEV_MODEL=typesafe/jev-1.13
     volumes:
-      - ./backend:/app
-      - /app/node_modules
-    command: npm run dev
+      - ./backend/dist:/app/dist
+      - ./backend/emails.db:/app/emails.db
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "3001:3000"
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      - "80:3000"
     environment:
-      - REACT_APP_API_URL=http://localhost:3000
-    command: npm start
+      - REACT_APP_API_URL=/api
