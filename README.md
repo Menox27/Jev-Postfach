@@ -63,6 +63,9 @@ npm start
 4. Geben Sie die URL Ihres Repositories an
 5. Deploy the stack
 
+Alternativ kann Portainer das Repository auch direkt clonen und bauen - das neue Dockerfile 
+kümmert sich nun automatisch um den Build-Prozess, falls kein dist-Ordner vorhanden ist.
+
 ## Lizenz
 
 MIT
