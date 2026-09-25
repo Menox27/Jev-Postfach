@@ -2,23 +2,15 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Copy package files
+# Copy package files and built dist folder
 COPY package*.json ./
+COPY dist/ ./dist/
 
-# Install all dependencies including dev dependencies for build
-RUN npm ci
-
-# Copy application code
-COPY . .
-
-# Build TypeScript
-RUN npm run build
-
-# Remove dev dependencies for smaller production image
-RUN npm prune --production
+# Install only production dependencies
+RUN npm ci --only=production
 
 # Expose port
 EXPOSE 3000
 
 # Start application
-CMD ["npm", "start"]
+CMD ["node", "dist/index.js"]
