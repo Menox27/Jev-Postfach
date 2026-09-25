@@ -4,10 +4,10 @@ Ein fortschrittliches System zur automatischen Klassifizierung von E-Mails mit K
 
 ## Funktionen
 
-- **Multi-Account Unterstützung**: Verwalten Sie mehrere iCloud/IMAP-Konten gleichzeitig
-- **KI-Klassifizierung**: Nutzt das TypeSafe Jev-Modell über OpenRouter für präzise Klassifizierung
+- **Multi-Account UnterstÃ¼tzung**: Verwalten Sie mehrere iCloud/IMAP-Konten gleichzeitig
+- **KI-Klassifizierung**: Nutzt das TypeSafe Jev-Modell Ã¼ber OpenRouter fÃ¼r prÃ¤zise Klassifizierung
 - **Automatische Einsortierung**: Verschiebt E-Mails automatisch in entsprechende Ordner
-- **Web-Oberfläche**: Moderne Benutzeroberfläche zum Verwalten von Konten und Klassifizierungen
+- **Web-OberflÃ¤che**: Moderne BenutzeroberflÃ¤che zum Verwalten von Konten und Klassifizierungen
 - **Docker-Containerisierung**: Einfache Bereitstellung mit Docker Compose
 
 ## Technologie-Stack
@@ -15,15 +15,16 @@ Ein fortschrittliches System zur automatischen Klassifizierung von E-Mails mit K
 - **Backend**: Node.js mit TypeScript
 - **Frontend**: React
 - **Datenbank**: SQLite
-- **KI-Modell**: TypeSafe Jev über OpenRouter
+- **KI-Modell**: TypeSafe Jev Ã¼ber OpenRouter
 - **IMAP-Client**: imapflow
 
 ## Schnellstart
 
 1. Repository klonen
-2. `docker-compose up` ausführen
-3. Im Browser `http://localhost:3000` öffnen
-4. E-Mail-Konten hinzufügen und Klassifizierung starten
+2. Build-Script ausfÃ¼hren: `./build.sh` (Linux/Mac) oder `build.bat` (Windows)
+3. `docker-compose up` ausfÃ¼hren
+4. Im Browser `http://localhost:3000` Ã¶ffnen
+5. E-Mail-Konten hinzufÃ¼gen und Klassifizierung starten
 
 ## Konfiguration
 
@@ -53,6 +54,14 @@ cd frontend
 npm install
 npm start
 ```
+
+## Deployment mit Portainer
+
+1. Stellen Sie sicher, dass alle Dateien im Repository sind
+2. FÃ¼hren Sie vor dem Deployment das Build-Script aus: `./build.sh` oder `build.bat`
+3. In Portainer wÃ¤hlen Sie "Stacks" â†’ "Add stack" â†’ "Repository"
+4. Geben Sie die URL Ihres Repositories an
+5. Deploy the stack
 
 ## Lizenz
 
