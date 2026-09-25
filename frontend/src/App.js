@@ -3,16 +3,16 @@ import axios from "axios";
 import "./App.css";
 
 function App() {
-  const [users, setUsers] = useState([]);
-  const [currentUser, setCurrentUser] = useState(null);
-  const [showRegister, setShowRegister] = useState(false);
-  const [emailAccounts, setEmailAccounts] = useState([]);
-  const [activeAccount, setActiveAccount] = useState(null);
+  const [currentPage, setCurrentPage] = useState("login"); // login, dashboard, settings
+  const [user, setUser] = useState(null);
+  const [accounts, setAccounts] = useState([]);
+  const [selectedAccount, setSelectedAccount] = useState(null);
   const [classifications, setClassifications] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  // Registration form state
-  const [registerForm, setRegisterForm] = useState({
+  // Login form state
+  const [loginForm, setLoginForm] = useState({
     email: "",
     imapHost: "imap.mail.me.com",
     imapPort: 993,
@@ -21,109 +21,92 @@ function App() {
     jevApiKey: ""
   });
 
-  // Load users on component mount
+  // Load accounts on component mount
   useEffect(() => {
-    loadUsers();
+    loadAccounts();
   }, []);
 
-  const loadUsers = async () => {
+  const loadAccounts = async () => {
     try {
       const response = await axios.get("/api/users");
-      setUsers(response.data.users);
-    } catch (error) {
-      console.error("Failed to load users:", error);
+      setAccounts(response.data.users);
+      if (response.data.users.length > 0) {
+        setSelectedAccount(response.data.users[0]);
+      }
+    } catch (err) {
+      console.error("Failed to load accounts:", err);
     }
   };
 
-  const handleRegister = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/api/users/register", registerForm);
-      setUsers([...users, response.data.user]);
-      setShowRegister(false);
-      setRegisterForm({
-        email: "",
-        imapHost: "imap.mail.me.com",
-        imapPort: 993,
-        imapUser: "",
-        imapPass: "",
-        jevApiKey: ""
-      });
-    } catch (error) {
-      console.error("Registration failed:", error);
+      const response = await axios.post("/api/users/register", loginForm);
+      setAccounts([...accounts, response.data.user]);
+      setSelectedAccount(response.data.user);
+      setCurrentPage("dashboard");
+      setError("");
+    } catch (err) {
+      setError("Failed to register account: " + (err.response?.data?.error || err.message));
     }
   };
 
   const handleAccountSelect = (account) => {
-    setActiveAccount(account);
+    setSelectedAccount(account);
     loadClassifications(account.id);
   };
 
-  const loadClassifications = async (userId) => {
+  const loadClassifications = async (accountId) => {
     try {
       setLoading(true);
-      const response = await axios.get(`/api/emails/${userId}/classifications`);
+      const response = await axios.get(`/api/emails/${accountId}/classifications`);
       setClassifications(response.data);
-    } catch (error) {
-      console.error("Failed to load classifications:", error);
+    } catch (err) {
+      console.error("Failed to load classifications:", err);
     } finally {
       setLoading(false);
     }
   };
 
   const handleProcessEmails = async () => {
-    if (!activeAccount) return;
+    if (!selectedAccount) return;
     
     try {
       setLoading(true);
-      await axios.post(`/api/emails/${activeAccount.id}/process`);
-      loadClassifications(activeAccount.id);
-    } catch (error) {
-      console.error("Failed to process emails:", error);
+      await axios.post(`/api/emails/${selectedAccount.id}/process`);
+      loadClassifications(selectedAccount.id);
+      setError("");
+    } catch (err) {
+      setError("Failed to process emails: " + (err.response?.data?.error || err.message));
     } finally {
       setLoading(false);
     }
   };
 
-  return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Smart Email Labeling System</h1>
-      </header>
+  const handleLogout = () => {
+    setUser(null);
+    setCurrentPage("login");
+  };
 
-      <main>
-        {/* User Selection */}
-        <section className="user-selection">
-          <h2>Email Accounts</h2>
-          <div className="account-list">
-            {users.map(user => (
-              <div 
-                key={user.id} 
-                className={`account-card ${activeAccount?.id === user.id ? "active" : ""}`}
-                onClick={() => handleAccountSelect(user)}
-              >
-                <h3>{user.email}</h3>
-                <p>{user.imapHost}:{user.imapPort}</p>
-              </div>
-            ))}
-            
-            <button className="add-account-btn" onClick={() => setShowRegister(true)}>
-              + Add Account
-            </button>
-          </div>
-        </section>
+  // Render login page
+  if (currentPage === "login") {
+    return (
+      <div className="App">
+        <header className="App-header">
+          <h1>Smart Email Labeling System</h1>
+        </header>
 
-        {/* Registration Form */}
-        {showRegister && (
-          <section className="registration-form">
-            <h2>Add New Email Account</h2>
-            <form onSubmit={handleRegister}>
+        <main className="login-container">
+          <div className="login-form">
+            <h2>Add Email Account</h2>
+            {error && <div className="error-message">{error}</div>}
+            <form onSubmit={handleLogin}>
               <div className="form-group">
-                <label>Email:</label>
+                <label>Email Address:</label>
                 <input
                   type="email"
-                  value={registerForm.email}
-                  onChange={(e) => setRegisterForm({...registerForm, email: e.target.value})}
+                  value={loginForm.email}
+                  onChange={(e) => setLoginForm({...loginForm, email: e.target.value})}
                   required
                 />
               </div>
@@ -132,8 +115,8 @@ function App() {
                 <label>IMAP Host:</label>
                 <input
                   type="text"
-                  value={registerForm.imapHost}
-                  onChange={(e) => setRegisterForm({...registerForm, imapHost: e.target.value})}
+                  value={loginForm.imapHost}
+                  onChange={(e) => setLoginForm({...loginForm, imapHost: e.target.value})}
                   required
                 />
               </div>
@@ -142,8 +125,8 @@ function App() {
                 <label>IMAP Port:</label>
                 <input
                   type="number"
-                  value={registerForm.imapPort}
-                  onChange={(e) => setRegisterForm({...registerForm, imapPort: parseInt(e.target.value)})}
+                  value={loginForm.imapPort}
+                  onChange={(e) => setLoginForm({...loginForm, imapPort: parseInt(e.target.value)})}
                   required
                 />
               </div>
@@ -152,8 +135,8 @@ function App() {
                 <label>IMAP Username:</label>
                 <input
                   type="text"
-                  value={registerForm.imapUser}
-                  onChange={(e) => setRegisterForm({...registerForm, imapUser: e.target.value})}
+                  value={loginForm.imapUser}
+                  onChange={(e) => setLoginForm({...loginForm, imapUser: e.target.value})}
                   required
                 />
               </div>
@@ -162,35 +145,70 @@ function App() {
                 <label>IMAP Password:</label>
                 <input
                   type="password"
-                  value={registerForm.imapPass}
-                  onChange={(e) => setRegisterForm({...registerForm, imapPass: e.target.value})}
+                  value={loginForm.imapPass}
+                  onChange={(e) => setLoginForm({...loginForm, imapPass: e.target.value})}
                   required
                 />
               </div>
               
               <div className="form-group">
-                <label>Jev API Key:</label>
+                <label>Jev API Key (OpenRouter):</label>
                 <input
                   type="password"
-                  value={registerForm.jevApiKey}
-                  onChange={(e) => setRegisterForm({...registerForm, jevApiKey: e.target.value})}
+                  value={loginForm.jevApiKey}
+                  onChange={(e) => setLoginForm({...loginForm, jevApiKey: e.target.value})}
                   required
                 />
+                <small className="help-text">Get your API key from OpenRouter.ai</small>
               </div>
               
               <div className="form-actions">
-                <button type="submit">Add Account</button>
-                <button type="button" onClick={() => setShowRegister(false)}>Cancel</button>
+                <button type="submit" disabled={loading}>
+                  {loading ? "Adding Account..." : "Add Account"}
+                </button>
               </div>
             </form>
-          </section>
-        )}
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  // Render dashboard
+  return (
+    <div className="App">
+      <header className="App-header">
+        <h1>Smart Email Labeling System</h1>
+        <button onClick={handleLogout} className="logout-btn">Logout</button>
+      </header>
+
+      <main className="dashboard-container">
+        {/* Account Selection */}
+        <section className="account-section">
+          <h2>Email Accounts</h2>
+          <div className="account-list">
+            {accounts.map(account => (
+              <div 
+                key={account.id} 
+                className={`account-card ${selectedAccount?.id === account.id ? "active" : ""}`}
+                onClick={() => handleAccountSelect(account)}
+              >
+                <h3>{account.email}</h3>
+                <p>{account.imapHost}:{account.imapPort}</p>
+              </div>
+            ))}
+            
+            <button className="add-account-btn" onClick={() => setCurrentPage("login")}>
+              + Add Another Account
+            </button>
+          </div>
+        </section>
 
         {/* Active Account Dashboard */}
-        {activeAccount && (
+        {selectedAccount && (
           <section className="dashboard">
             <div className="dashboard-header">
-              <h2>{activeAccount.email} - Dashboard</h2>
+              <h2>{selectedAccount.email} - Dashboard</h2>
               <button 
                 className="process-btn" 
                 onClick={handleProcessEmails}
@@ -199,6 +217,8 @@ function App() {
                 {loading ? "Processing..." : "Process Emails"}
               </button>
             </div>
+            
+            {error && <div className="error-message">{error}</div>}
             
             <div className="classifications">
               <h3>Recent Classifications</h3>
@@ -212,11 +232,11 @@ function App() {
                     <div key={classification.id} className="classification-item">
                       <div className="classification-header">
                         <span className="label">{classification.label}</span>
-                        <span className="confidence">Confidence: {classification.confidence}</span>
+                        <span className="confidence">Confidence: {(classification.confidence * 100).toFixed(1)}%</span>
                       </div>
                       <p className="reasoning">{classification.reasoning}</p>
                       <div className="classification-meta">
-                        <span>UID: {classification.email_uid}</span>
+                        <span>Email UID: {classification.email_uid}</span>
                         <span>{new Date(classification.timestamp).toLocaleString()}</span>
                       </div>
                     </div>

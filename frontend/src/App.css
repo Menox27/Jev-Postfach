@@ -6,15 +6,103 @@
   background-color: #282c34;
   padding: 20px;
   color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-main {
+.logout-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.login-container {
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 20px;
+}
+
+.login-form {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 30px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.login-form h2 {
+  margin-top: 0;
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #555;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+.help-text {
+  display: block;
+  font-size: 12px;
+  color: #666;
+  margin-top: 5px;
+}
+
+.form-actions {
+  margin-top: 30px;
+}
+
+.form-actions button {
+  width: 100%;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 12px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.form-actions button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  border: 1px solid #f5c6cb;
+}
+
+/* Dashboard Styles */
+.dashboard-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
 }
 
-.user-selection {
+.account-section {
   margin-bottom: 30px;
 }
 
@@ -31,6 +119,7 @@ main {
   cursor: pointer;
   width: 250px;
   transition: all 0.3s ease;
+  background-color: #fff;
 }
 
 .account-card:hover {
@@ -40,6 +129,7 @@ main {
 .account-card.active {
   border-color: #007bff;
   background-color: #f8f9fa;
+  box-shadow: 0 0 0 2px #007bff;
 }
 
 .add-account-btn {
@@ -47,58 +137,11 @@ main {
   color: white;
   border: none;
   border-radius: 4px;
-  padding: 10px 15px;
+  padding: 15px;
   cursor: pointer;
   font-size: 16px;
-}
-
-.registration-form {
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 30px;
-}
-
-.form-group {
-  margin-bottom: 15px;
-  text-align: left;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
-.form-group input {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
-
-.form-actions {
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-}
-
-.form-actions button {
-  padding: 10px 15px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.form-actions button[type="submit"] {
-  background-color: #007bff;
-  color: white;
-}
-
-.form-actions button[type="button"] {
-  background-color: #6c757d;
-  color: white;
+  width: 250px;
+  height: 80px;
 }
 
 .dashboard-header {
@@ -106,6 +149,8 @@ main {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
 }
 
 .process-btn {
@@ -115,11 +160,16 @@ main {
   border-radius: 4px;
   padding: 10px 15px;
   cursor: pointer;
+  font-size: 16px;
 }
 
 .process-btn:disabled {
   background-color: #6c757d;
   cursor: not-allowed;
+}
+
+.classifications {
+  text-align: left;
 }
 
 .classification-list {
@@ -132,7 +182,7 @@ main {
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 15px;
-  text-align: left;
+  background-color: #fff;
 }
 
 .classification-header {
@@ -156,6 +206,7 @@ main {
 
 .reasoning {
   margin-bottom: 10px;
+  line-height: 1.5;
 }
 
 .classification-meta {
