@@ -1,50 +1,13 @@
-// Entry point for the application
+// Entry point for the application - only for manual processing
 import { ImapClient } from "./imapClient";
 import { JevClient } from "./jevClient";
 import { ClassificationEngine } from "./classificationEngine";
 import { Database } from "./db";
 
-async function main() {
-  // Initialize components
-  const db = new Database();
-  
-  // IMAP configuration for iCloud
-  const imapConfig = {
-    host: process.env.IMAP_HOST || "imap.mail.me.com",
-    port: parseInt(process.env.IMAP_PORT || "993"),
-    secure: true,
-    auth: {
-      user: process.env.IMAP_USER || "",
-      pass: process.env.IMAP_PASS || ""
-    }
-  };
-  
-  // Jev API configuration
-  const jevConfig = {
-    apiKey: process.env.JEV_API_KEY || "",
-    model: process.env.JEV_MODEL || "typesafe/jev-1.13"
-  };
-  
-  try {
-    const imapClient = new ImapClient(imapConfig);
-    const jevClient = new JevClient(jevConfig);
-    const engine = new ClassificationEngine(imapClient, jevClient, db);
-    
-    // Connect to IMAP
-    await imapClient.connect();
-    console.log("Connected to iCloud IMAP");
-    
-    // Process emails (userId 1 as default for single user mode)
-    await engine.processEmails(1);
-    console.log("Email processing completed");
-    
-    // Disconnect
-    await imapClient.disconnect();
-    console.log("Disconnected from iCloud IMAP");
-  } catch (error: any) {
-    console.error("Application error:", error);
-  }
-}
+console.log("Smart Email Labeling System - Manual Processing Mode");
+console.log("Use the web API for normal operation");
+console.log("To process emails manually, provide IMAP credentials as environment variables");
 
-main();
+// This file is for manual processing only, not for web server
+// The web server is started by server.ts
 

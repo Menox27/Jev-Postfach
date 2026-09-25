@@ -13,6 +13,11 @@ app.use(express.json());
 // Initialize components
 const db = new Database();
 
+// Health check endpoint
+app.get("/", (req, res) => {
+  res.json({ message: "Smart Email Labeling System API is running" });
+});
+
 // API Endpoints
 app.get("/api/emails/:userId/classifications", async (req, res) => {
   try {
@@ -86,6 +91,7 @@ app.post("/api/emails/:userId/process", async (req, res) => {
     
     return res.json({ message: `Email processing completed for user ${userId}` });
   } catch (error: any) {
+    console.error("Processing error:", error);
     return res.status(500).json({ error: error.message });
   }
 });
@@ -129,7 +135,7 @@ app.get("/api/users", async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+app.listen(parseInt(port.toString()), "0.0.0.0", () => {
+  console.log(`Server running at http://0.0.0.0:${port}`);
 });
 
